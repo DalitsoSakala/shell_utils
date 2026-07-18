@@ -1,3 +1,23 @@
+#!/usr/bin/env bash
+# Git helpers for listing and reviewing author-scoped file changes.
+
+# -----------------------------------------------------------------------------
+# git-ls — list unique files changed by the current Git author
+#
+# Prints a sorted, deduplicated list of file paths touched by commits from
+# `git config user.email` within an optional date range (defaults to today).
+#
+# Options:
+#   -c, -commit  <rev>     Starting revision for git log (default: HEAD)
+#   -s, -since   <date>    Inclusive start date YYYY-MM-DD (default: today)
+#   -e, -until   <date>    Inclusive end date YYYY-MM-DD (default: today)
+#   -x, -exclude <path>    Pathspec to exclude from results
+#
+# Options accept either `-flag=value` or `-flag value` forms.
+#
+# Example:
+#   git-ls -since=2026-07-01 -until=2026-07-18 -exclude=vendor/
+# -----------------------------------------------------------------------------
 git-ls() {
     local commit="HEAD"
     local since
@@ -49,6 +69,20 @@ git-ls() {
     fi | grep -v '^$' | sort -u
 }
 
+# -----------------------------------------------------------------------------
+# git-dif — open git-ls results in git difftool
+#
+# Collects files from git-ls (same options) and launches `git difftool` against
+# the chosen commit so you can review those author-scoped changes interactively.
+# Prints a message and exits if no matching files are found.
+#
+# Options:
+#   Same as git-ls (-commit/-c, -since/-s, -until/-e, -exclude/-x).
+#   -c/-commit also selects the revision passed to git difftool (default: HEAD).
+#
+# Example:
+#   git-dif -since=2026-07-01 -c HEAD~3
+# -----------------------------------------------------------------------------
 git-dif() {
     local -a files=()
     local file
@@ -74,4 +108,3 @@ git-dif() {
         echo "No files modified matching the criteria."
     fi
 }
-
