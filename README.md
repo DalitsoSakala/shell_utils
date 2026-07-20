@@ -36,11 +36,13 @@ Lists unique file paths touched by your commits in a date range (defaults to tod
 | `-s`, `-since` | Inclusive start date `YYYY-MM-DD` (default: today) |
 | `-e`, `-until` | Inclusive end date `YYYY-MM-DD` (default: today) |
 | `-x`, `-exclude` | Pathspec to exclude |
+| `-g`, `-grep` | Only commits whose message matches text (case-insensitive) |
 
 Flags accept `-flag=value` or `-flag value`.
 
 ```bash
 git-ls -since=2026-07-01 -until=2026-07-18 -exclude=vendor/
+git-ls -grep=hotfix
 ```
 
 #### `git-dif`
@@ -49,6 +51,7 @@ Runs `git-ls` with the same options, then opens matching files in `git difftool`
 
 ```bash
 git-dif -since=2026-07-01 -c HEAD~3
+git-dif -grep=hotfix
 ```
 
 ## Adding helpers
