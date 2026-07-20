@@ -22,6 +22,26 @@ Then open a new shell, or run `source ~/.bashrc`. Re-run `./init.sh` whenever yo
 
 Installer (not sourced every session). Lists `*_ref.sh` files in this folder, lets you pick which ones to load, and writes a marked block at the end of `~/.bashrc` that sources those files. Safe to re-run; it replaces the previous block.
 
+### `init_nvim.sh`
+
+Installs the NvChad-based Neovim config from [`nvim/`](nvim/) and bootstraps plugins. Requires Neovim on `PATH`.
+
+```bash
+./init_nvim.sh
+```
+
+Behavior:
+
+- Symlinks `~/.config/nvim` → this repo’s `nvim/` folder
+- If an existing config is present (and is not already that symlink), moves it to `~/.config/nvim.bak.<timestamp>`
+- Runs `nvim --headless "+Lazy! sync" +qa` so Lazy / NvChad plugins install
+
+Safe to re-run: if the symlink already points here, it skips re-linking and re-runs Lazy sync.
+
+### `nvim/`
+
+Vendored Neovim config (NvChad v2.5 starter plus local customizations: mappings, nvim-tree, treesitter, LSP for Python/web). This is the source of truth used by `init_nvim.sh`.
+
 ### `git_ref.sh`
 
 Git helpers scoped to the current author (`git config user.email`). Provides:
