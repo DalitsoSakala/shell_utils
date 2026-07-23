@@ -8,6 +8,8 @@
 # `git config user.email` within an optional date range (defaults to today).
 #
 # Options:
+#   -h, -help              Show this help and exit
+#   -a, -author  <name>    Author filter (default: git config user.email)
 #   -c, -commit  <rev>     Starting revision for git log (default: HEAD)
 #   -s, -since   <date>    Inclusive start date YYYY-MM-DD (default: today)
 #   -e, -until   <date>    Inclusive end date YYYY-MM-DD (default: today)
@@ -19,8 +21,37 @@
 # Example:
 #   git-ls -since=2026-07-01 -until=2026-07-18 -exclude=vendor/
 #   git-ls -grep=fix
+#   git-ls -author=alice@example.com
 # -----------------------------------------------------------------------------
 git-ls() {
+    case "${1:-}" in
+        -h|-help|--help)
+            cat <<'EOF'
+git-ls — list unique files changed by the current Git author
+
+Prints a sorted, deduplicated list of file paths touched by commits from
+`git config user.email` within an optional date range (defaults to today).
+
+Options:
+  -h, -help              Show this help and exit
+  -a, -author  <name>    Author filter (default: git config user.email)
+  -c, -commit  <rev>     Starting revision for git log (default: HEAD)
+  -s, -since   <date>    Inclusive start date YYYY-MM-DD (default: today)
+  -e, -until   <date>    Inclusive end date YYYY-MM-DD (default: today)
+  -x, -exclude <path>    Pathspec to exclude from results
+  -g, -grep    <text>    Only commits whose message matches text (ignorecase)
+
+Options accept either `-flag=value` or `-flag value` forms.
+
+Examples:
+  git-ls -since=2026-07-01 -until=2026-07-18 -exclude=vendor/
+  git-ls -grep=fix
+  git-ls -author=alice@example.com
+EOF
+            return 0
+            ;;
+    esac
+
     local commit="HEAD"
     local since
     local until
@@ -38,6 +69,7 @@ git-ls() {
             -until=*|-e=*)   until="${1#*=}"; shift ;;
             -exclude=*|-x=*) exclude="${1#*=}"; shift ;;
             -grep=*|-g=*)    grep_text="${1#*=}"; shift ;;
+            -author=*|-a=*)  author="${1#*=}"; shift ;;
             -commit|-c)
                 [ $# -ge 2 ] || { echo "Error: $1 requires a value" >&2; return 1; }
                 commit="$2"; shift 2
@@ -57,6 +89,10 @@ git-ls() {
             -grep|-g)
                 [ $# -ge 2 ] || { echo "Error: $1 requires a value" >&2; return 1; }
                 grep_text="$2"; shift 2
+                ;;
+            -author|-a)
+                [ $# -ge 2 ] || { echo "Error: $1 requires a value" >&2; return 1; }
+                author="$2"; shift 2
                 ;;
             *)
                 echo "Warning: Unknown argument '$1' ignored." >&2
@@ -88,14 +124,45 @@ git-ls() {
 # Prints a message and exits if no matching files are found.
 #
 # Options:
-#   Same as git-ls (-commit/-c, -since/-s, -until/-e, -exclude/-x, -grep/-g).
+#   -h, -help              Show this help and exit
+#   Same as git-ls (-author/-a, -commit/-c, -since/-s, -until/-e, -exclude/-x, -grep/-g).
 #   -c/-commit also selects the revision passed to git difftool (default: HEAD).
 #
 # Example:
 #   git-dif -since=2026-07-01 -c HEAD~3
 #   git-dif -grep=hotfix
+#   git-dif -author=alice@example.com
 # -----------------------------------------------------------------------------
 git-dif() {
+    case "${1:-}" in
+        -h|-help|--help)
+            cat <<'EOF'
+git-dif — open git-ls results in git difftool
+
+Collects files from git-ls (same options) and launches `git difftool` against
+the chosen commit so you can review those author-scoped changes interactively.
+Prints a message and exits if no matching files are found.
+
+Options:
+  -h, -help              Show this help and exit
+  -a, -author  <name>    Author filter (default: git config user.email)
+  -c, -commit  <rev>     Starting revision for git log / difftool (default: HEAD)
+  -s, -since   <date>    Inclusive start date YYYY-MM-DD (default: today)
+  -e, -until   <date>    Inclusive end date YYYY-MM-DD (default: today)
+  -x, -exclude <path>    Pathspec to exclude from results
+  -g, -grep    <text>    Only commits whose message matches text (ignorecase)
+
+Options accept either `-flag=value` or `-flag value` forms.
+
+Examples:
+  git-dif -since=2026-07-01 -c HEAD~3
+  git-dif -grep=hotfix
+  git-dif -author=alice@example.com
+EOF
+            return 0
+            ;;
+    esac
+
     local -a files=()
     local file
     while IFS= read -r file; do

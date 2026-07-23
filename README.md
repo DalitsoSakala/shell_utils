@@ -52,6 +52,8 @@ Lists unique file paths touched by your commits in a date range (defaults to tod
 
 | Option | Description |
 |--------|-------------|
+| `-h`, `-help` | Show help and exit |
+| `-a`, `-author` | Author filter (default: `git config user.email`) |
 | `-c`, `-commit` | Starting revision for `git log` (default: `HEAD`) |
 | `-s`, `-since` | Inclusive start date `YYYY-MM-DD` (default: today) |
 | `-e`, `-until` | Inclusive end date `YYYY-MM-DD` (default: today) |
@@ -61,8 +63,10 @@ Lists unique file paths touched by your commits in a date range (defaults to tod
 Flags accept `-flag=value` or `-flag value`.
 
 ```bash
+git-ls -h
 git-ls -since=2026-07-01 -until=2026-07-18 -exclude=vendor/
 git-ls -grep=hotfix
+git-ls -author=alice@example.com
 ```
 
 #### `git-dif`
@@ -70,8 +74,10 @@ git-ls -grep=hotfix
 Runs `git-ls` with the same options, then opens matching files in `git difftool` against the chosen commit (`-c` / `-commit`, default `HEAD`). Prints a message if nothing matches.
 
 ```bash
+git-dif -h
 git-dif -since=2026-07-01 -c HEAD~3
 git-dif -grep=hotfix
+git-dif -author=alice@example.com
 ```
 
 ## Adding helpers
