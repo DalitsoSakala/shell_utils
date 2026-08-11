@@ -52,6 +52,22 @@ vim.lsp.config('pyright', {
   },
 })
 
+require("telescope").setup({
+  defaults = {
+    layout_strategy = "horizontal",
+    layout_config = {
+      -- Take up 100% of terminal dimensions
+      width = 0.99,
+      height = 0.99,
+      
+      -- Optional: adjust pane ratios for full screen
+      preview_width = 0.55, -- 55% for preview, 45% for results list
+      prompt_position = "top",
+    },
+    sorting_strategy = "ascending",
+  },
+})
+
 -- 2. Configure Ruff (Linting & Formatting)
 vim.lsp.config('ruff', {
   cmd = { "ruff", "server" },

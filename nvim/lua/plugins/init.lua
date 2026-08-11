@@ -25,14 +25,32 @@ return {
   },
   -- test new blink
   -- { import = "nvchad.blink.lazyspec" },
-
-  -- {
-  -- 	"nvim-treesitter/nvim-treesitter",
-  -- 	opts = {
-  -- 		ensure_installed = {
-  -- 			"vim", "lua", "vimdoc",
-  --      "html", "css"
-  -- 		},
-  -- 	},
-  -- },
+  {
+    "nvim-treesitter/nvim-treesitter",
+    tag = "v0.9.3", -- Fixes Neovim < 0.12 compatibility
+    build = ":TSUpdate",
+    event = { "BufReadPost", "BufNewFile" }, -- Load on buffer open
+    cmd = { "TSInstall", "TSBufEnable", "TSBufDisable", "TSModuleInfo" },
+    opts = {
+      ensure_installed = {
+        "vim",
+        "lua",
+        "vimdoc",
+        "html",
+        "css",
+        "javascript",
+        "typescript",
+        "tsx",
+        "markdown",        -- Required for headers/blocks
+        "markdown_inline", -- Required for bold/italic/links
+      },
+      auto_install = true,
+      config = function(_, opts)
+        require("nvim-treesitter.configs").setup(opts)
+      end,
+      indent = {
+        enable = true, -- Ensure treesitter handles unindenting
+      },
+    },
+  },
 }

@@ -6,7 +6,7 @@ return {
     build = ":TSUpdate",
     config = function()
       -- Change ".configs" to ".config" here:
-      require("nvim-treesitter.config").setup({
+      require("nvim-treesitter.configs").setup({
         ensure_installed = { "javascript", "typescript", "tsx", "html", "css" },
         highlight = { 
           enable = true,
