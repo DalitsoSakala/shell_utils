@@ -711,6 +711,22 @@ _update_nvim_snippets() {
       {
         "language": "go",
         "path": "./go.json"
+      },
+      {
+        "language": "javascript",
+        "path": "./react.json"
+      },
+      {
+        "language": "typescript",
+        "path": "./react.json"
+      },
+      {
+        "language": "javascriptreact",
+        "path": "./react.json"
+      },
+      {
+        "language": "typescriptreact",
+        "path": "./react.json"
       }
     ]
   }
@@ -1209,6 +1225,129 @@ EOF
       "})"
     ],
     "description": "Execute database operations within a transaction"
+  }
+}
+EOF
+
+    # Generate react.json
+    cat <<'EOF' > "${snippets_dir}/react.json"
+{
+  "React HTML Table": {
+    "prefix": "rtable",
+    "body": [
+      "<table>",
+      "  <thead>",
+      "    <tr>",
+      "      <th>${1:Header}</th>",
+      "    </tr>",
+      "  </thead>",
+      "  <tbody>",
+      "    {${2:items}.map((${3:item}) => (",
+      "      <tr key={${3:item}.${4:id}}>",
+      "        <td>{${3:item}.${5:property}}</td>",
+      "      </tr>",
+      "    ))}",
+      "  </tbody>",
+      "</table>"
+    ],
+    "description": "Create an HTML table in React with map => tr loop"
+  },
+  "React Default Export Component": {
+    "prefix": "rfc",
+    "body": [
+      "import React from 'react';",
+      "",
+      "interface ${1:ComponentName}Props {",
+      "  ${2:// props}",
+      "}",
+      "",
+      "export default function ${1:ComponentName}({ ${3:props} }: ${1:ComponentName}Props) {",
+      "  return (",
+      "    <div>",
+      "      $0",
+      "    </div>",
+      "  );",
+      "}"
+    ],
+    "description": "Create a React functional component with default export"
+  },
+  "React Query - useQuery": {
+    "prefix": "usequery",
+    "body": [
+      "import { useQuery } from '@tanstack/react-query';",
+      "",
+      "const { data, isLoading, error } = useQuery({",
+      "  queryKey: ['${1:queryKey}'],",
+      "  queryFn: ${2:fetchFunction}",
+      "});"
+    ],
+    "description": "Create a React Query useQuery hook instance"
+  },
+  "React Query - useMutation": {
+    "prefix": "usemutation",
+    "body": [
+      "import { useMutation, useQueryClient } from '@tanstack/react-query';",
+      "",
+      "const queryClient = useQueryClient();",
+      "",
+      "const { mutate, isPending, error } = useMutation({",
+      "  mutationFn: ${1:mutationFunction},",
+      "  onSuccess: () => {",
+      "    queryClient.invalidateQueries({ queryKey: ['${2:queryKey}'] });",
+      "  }",
+      "});"
+    ],
+    "description": "Create a React Query useMutation hook instance"
+  },
+  "React Context and Provider": {
+    "prefix": "reactcontext",
+    "body": [
+      "import React, { createContext, useContext, useState, ReactNode } from 'react';",
+      "",
+      "interface ${1:ContextName}Type {",
+      "  ${2:state}: ${3:any};",
+      "  set${2:state}: React.Dispatch<React.SetStateAction<${3:any}>>;",
+      "}",
+      "",
+      "const ${1:ContextName}Context = createContext<${1:ContextName}Type | undefined>(undefined);",
+      "",
+      "export function ${1:ContextName}Provider({ children }: { children: ReactNode }) {",
+      "  const [${2:state}, set${2:state}] = useState<${3:any}>(${4:initialValue});",
+      "",
+      "  return (",
+      "    <${1:ContextName}Context.Provider value={{ ${2:state}, set${2:state} }}>",
+      "      {children}",
+      "    </${1:ContextName}Context.Provider>",
+      "  );",
+      "}",
+      "",
+      "export function use${1:ContextName}() {",
+      "  const context = useContext(${1:ContextName}Context);",
+      "  if (context === undefined) {",
+      "    throw new Error('use${1:ContextName} must be used within a ${1:ContextName}Provider');",
+      "  }",
+      "  return context;",
+      "}"
+    ],
+    "description": "Create a React context, provider component, and custom hook"
+  },
+  "React Dynamic Refs Map": {
+    "prefix": "dynamicrefs",
+    "body": [
+      "import { useRef } from 'react';",
+      "",
+      "const ${1:refsMap} = useRef<Map<${2:string}, ${3:HTMLElement} | null>>(null);",
+      "",
+      "const getMap = () => {",
+      "  if (!${1:refsMap}.current) {",
+      "    ${1:refsMap}.current = new Map();",
+      "  }",
+      "  return ${1:refsMap}.current;",
+      "};",
+      "",
+      "// Usage in render: ref={node => { const map = getMap(); if (node) { map.set(key, node); } else { map.delete(key); } }}"
+    ],
+    "description": "Create React dynamic refs template utilizing Map"
   }
 }
 EOF
