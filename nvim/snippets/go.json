@@ -1,0 +1,127 @@
+{
+  "GORM Import": {
+    "prefix": "gormimport",
+    "body": [
+      "import (",
+      "\t\"gorm.io/gorm\"",
+      "\t\"gorm.io/driver/${1:sqlite}\"",
+      ")"
+    ],
+    "description": "Import GORM and a driver"
+  },
+  "GORM Connect": {
+    "prefix": "gormconnect",
+    "body": [
+      "db, err := gorm.Open(${1:sqlite}.Open(\"${2:database.db}\"), &gorm.Config{})",
+      "if err != nil {",
+      "\tlog.Fatalf(\"failed to connect database: %v\", err)",
+      "}"
+    ],
+    "description": "Initialize a GORM database connection"
+  },
+  "GORM Model": {
+    "prefix": "gormmodel",
+    "body": [
+      "type ${1:ModelName} struct {",
+      "\tgorm.Model",
+      "\t${2:FieldName} ${3:FieldType} `gorm:\"${4:column:field_name}\"`",
+      "}"
+    ],
+    "description": "Declare a GORM Model struct"
+  },
+  "GORM AutoMigrate": {
+    "prefix": "gormmigrate",
+    "body": [
+      "err = db.AutoMigrate(&${1:ModelName}{})",
+      "if err != nil {",
+      "\tlog.Fatalf(\"failed to auto migrate: %v\", err)",
+      "}"
+    ],
+    "description": "Auto migrate a schema"
+  },
+  "GORM Create": {
+    "prefix": "gormcreate",
+    "body": [
+      "result := db.Create(&${1:variable})",
+      "if result.Error != nil {",
+      "\t${2:// handle error}",
+      "}"
+    ],
+    "description": "Create a new record in GORM"
+  },
+  "GORM First": {
+    "prefix": "gormfirst",
+    "body": [
+      "var ${1:result} ${2:ModelName}",
+      "err := db.First(&${1:result}, ${3:id}).Error",
+      "if err != nil {",
+      "\t${4:// handle error}",
+      "}"
+    ],
+    "description": "Query first record by ID"
+  },
+  "GORM Find All": {
+    "prefix": "gormfind",
+    "body": [
+      "var ${1:results} []${2:ModelName}",
+      "err := db.Find(&${1:results}).Error",
+      "if err != nil {",
+      "\t${3:// handle error}",
+      "}"
+    ],
+    "description": "Query all records matching criteria"
+  },
+  "GORM Where Query": {
+    "prefix": "gormwhere",
+    "body": [
+      "var ${1:results} []${2:ModelName}",
+      "err := db.Where(\"${3:query}\", ${4:arg}).Find(&${1:results}).Error",
+      "if err != nil {",
+      "\t${5:// handle error}",
+      "}"
+    ],
+    "description": "Query records with a WHERE clause"
+  },
+  "GORM Update": {
+    "prefix": "gormupdate",
+    "body": [
+      "err := db.Model(&${1:modelInstance}).Update(\"${2:FieldName}\", ${3:value}).Error",
+      "if err != nil {",
+      "\t${4:// handle error}",
+      "}"
+    ],
+    "description": "Update a single field of a record"
+  },
+  "GORM Updates Map/Struct": {
+    "prefix": "gormupdates",
+    "body": [
+      "err := db.Model(&${1:modelInstance}).Updates(${2:ModelName}{${3:FieldName}: ${4:value}}).Error",
+      "if err != nil {",
+      "\t${5:// handle error}",
+      "}"
+    ],
+    "description": "Update multiple fields using struct or map"
+  },
+  "GORM Delete": {
+    "prefix": "gormdelete",
+    "body": [
+      "err := db.Delete(&${1:modelInstance}, ${2:id}).Error",
+      "if err != nil {",
+      "\t${3:// handle error}",
+      "}"
+    ],
+    "description": "Delete a record"
+  },
+  "GORM Transaction": {
+    "prefix": "gormtx",
+    "body": [
+      "err = db.Transaction(func(tx *gorm.DB) error {",
+      "\tif err := tx.Create(&${1:model}).Error; err != nil {",
+      "\t\treturn err",
+      "\t}",
+      "\treturn nil",
+      "})"
+    ],
+    "description": "Execute database operations within a transaction"
+  }
+}

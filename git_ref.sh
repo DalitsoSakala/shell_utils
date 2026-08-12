@@ -187,3 +187,25 @@ EOF
         echo "No files modified matching the criteria."
     fi
 }
+
+_git_ls_autocomplete() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    opts="-h -help --help -a -author -c -commit -s -since -e -until -x -exclude -g -grep"
+
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+    return 0
+}
+complete -F _git_ls_autocomplete git-ls
+
+_git_dif_autocomplete() {
+    local cur prev opts
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    opts="-h -help --help -a -author -c -commit -s -since -e -until -x -exclude -g -grep"
+
+    COMPREPLY=( $(compgen -W "${opts}" -- "${cur}") )
+    return 0
+}
+complete -F _git_dif_autocomplete git-dif

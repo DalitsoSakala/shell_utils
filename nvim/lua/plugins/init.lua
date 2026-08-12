@@ -43,6 +43,7 @@ return {
         "tsx",
         "markdown",        -- Required for headers/blocks
         "markdown_inline", -- Required for bold/italic/links
+        "kotlin",
       },
       auto_install = true,
       config = function(_, opts)
@@ -52,5 +53,13 @@ return {
         enable = true, -- Ensure treesitter handles unindenting
       },
     },
+  },
+  {
+    "L3MON4D3/LuaSnip",
+    config = function(_, opts)
+      require("luasnip").config.set_config(opts)
+      require("nvchad.configs.luasnip")
+      require("configs.luasnip")
+    end,
   },
 }

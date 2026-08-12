@@ -1,0 +1,361 @@
+{
+  "Import Compose Common": {
+    "prefix": "impcomp",
+    "body": [
+      "import androidx.compose.runtime.Composable",
+      "import androidx.compose.ui.tooling.preview.Preview",
+      "import androidx.compose.runtime.remember",
+      "import androidx.compose.runtime.getValue",
+      "import androidx.compose.runtime.setValue",
+      "import androidx.compose.runtime.mutableStateOf",
+      "import androidx.compose.ui.Modifier",
+      "import androidx.compose.ui.Alignment",
+      "import androidx.compose.foundation.layout.Box",
+      "import androidx.compose.foundation.layout.Column",
+      "import androidx.compose.foundation.layout.Row",
+      "import androidx.compose.foundation.layout.fillMaxSize",
+      "import androidx.compose.foundation.layout.padding",
+      "import androidx.compose.ui.unit.dp",
+      "import androidx.compose.material3.Text",
+      "import androidx.compose.material3.TextField",
+      "import androidx.compose.material3.OutlinedTextField",
+      "import androidx.compose.foundation.lazy.LazyColumn",
+      "import androidx.compose.foundation.lazy.items"
+    ],
+    "description": "Import commonly used Jetpack Compose classes"
+  },
+  "Import ViewModel and Lifecycle": {
+    "prefix": "impvm",
+    "body": [
+      "import androidx.lifecycle.ViewModel",
+      "import androidx.lifecycle.viewmodel.compose.viewModel",
+      "import androidx.lifecycle.viewModelScope",
+      "import kotlinx.coroutines.flow.MutableStateFlow",
+      "import kotlinx.coroutines.flow.asStateFlow",
+      "import kotlinx.coroutines.launch"
+    ],
+    "description": "Import commonly used ViewModel and Lifecycle classes"
+  },
+  "ViewModel Boilerplate": {
+    "prefix": "viewmodel",
+    "body": [
+      "import androidx.lifecycle.ViewModel",
+      "import androidx.lifecycle.viewModelScope",
+      "import kotlinx.coroutines.flow.MutableStateFlow",
+      "import kotlinx.coroutines.flow.asStateFlow",
+      "import kotlinx.coroutines.launch",
+      "",
+      "class ${1:My}ViewModel : ViewModel() {",
+      "    private val _uiState = MutableStateFlow(${2:InitialState}())",
+      "    val uiState = _uiState.asStateFlow()",
+      "",
+      "    fun onEvent(${3:event}: ${4:Event}) {",
+      "        viewModelScope.launch {",
+      "            $0",
+      "        }",
+      "    }",
+      "}"
+    ],
+    "description": "Create a new Jetpack Compose compatible ViewModel boilerplate"
+  },
+  "Composable Function": {
+    "prefix": "comp",
+    "body": [
+      "@Composable",
+      "fun ${1:MyComponent}(",
+      "    modifier: Modifier = Modifier",
+      ") {",
+      "    $0",
+      "}"
+    ],
+    "description": "Create a Jetpack Compose @Composable function"
+  },
+  "Composable Preview": {
+    "prefix": "prev",
+    "body": [
+      "@Preview(showBackground = true)",
+      "@Composable",
+      "fun ${1:MyComponent}Preview() {",
+      "    ${1:MyComponent}()",
+      "}"
+    ],
+    "description": "Create a Jetpack Compose @Preview function"
+  },
+  "Composable Preview (Dark/Light)": {
+    "prefix": "prevd",
+    "body": [
+      "@Preview(name = \"Light Mode\", showBackground = true)",
+      "@Preview(name = \"Dark Mode\", uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, showBackground = true)",
+      "@Composable",
+      "fun ${1:MyComponent}Preview() {",
+      "    ${1:MyComponent}()",
+      "}"
+    ],
+    "description": "Create a @Preview function for Light and Dark modes"
+  },
+  "remember mutableStateOf": {
+    "prefix": "rem",
+    "body": [
+      "val ${1:state} = remember { mutableStateOf(${2:initialValue}) }"
+    ],
+    "description": "Create a remembered state"
+  },
+  "remember mutableStateOf (by delegation)": {
+    "prefix": "remby",
+    "body": [
+      "var ${1:state} by remember { mutableStateOf(${2:initialValue}) }"
+    ],
+    "description": "Create a remembered delegate state"
+  },
+  "Column Layout": {
+    "prefix": "col",
+    "body": [
+      "Column(",
+      "    modifier = ${1:Modifier},",
+      "    verticalArrangement = Arrangement.${2:Top},",
+      "    horizontalAlignment = Alignment.${3:Start}",
+      ") {",
+      "    $0",
+      "}"
+    ],
+    "description": "Create a Column layout"
+  },
+  "Row Layout": {
+    "prefix": "row",
+    "body": [
+      "Row(",
+      "    modifier = ${1:Modifier},",
+      "    horizontalArrangement = Arrangement.${2:Start},",
+      "    verticalAlignment = Alignment.${3:Top}",
+      ") {",
+      "    $0",
+      "}"
+    ],
+    "description": "Create a Row layout"
+  },
+  "Box Layout": {
+    "prefix": "box",
+    "body": [
+      "Box(",
+      "    modifier = ${1:Modifier},",
+      "    contentAlignment = Alignment.${2:TopStart}",
+      ") {",
+      "    $0",
+      "}"
+    ],
+    "description": "Create a Box layout"
+  },
+  "LazyColumn Layout": {
+    "prefix": "lcol",
+    "body": [
+      "LazyColumn(",
+      "    modifier = ${1:Modifier},",
+      "    contentPadding = PaddingValues(${2:16.dp}),",
+      "    verticalArrangement = Arrangement.spacedBy(${3:8.dp})",
+      ") {",
+      "    items(${4:itemsList}) { item ->",
+      "        $0",
+      "    }",
+      "}"
+    ],
+    "description": "Create a LazyColumn for lists"
+  },
+  "LazyRow Layout": {
+    "prefix": "lrow",
+    "body": [
+      "LazyRow(",
+      "    modifier = ${1:Modifier},",
+      "    contentPadding = PaddingValues(${2:16.dp}),",
+      "    horizontalArrangement = Arrangement.spacedBy(${3:8.dp})",
+      ") {",
+      "    items(${4:itemsList}) { item ->",
+      "        $0",
+      "    }",
+      "}"
+    ],
+    "description": "Create a LazyRow for horizontal lists"
+  },
+  "Scaffold Boilerplate": {
+    "prefix": "scaffold",
+    "body": [
+      "Scaffold(",
+      "    modifier = ${1:Modifier},",
+      "    topBar = {",
+      "        ${2:// TopBar}",
+      "    },",
+      "    bottomBar = {",
+      "        ${3:// BottomBar}",
+      "    },",
+      "    floatingActionButton = {",
+      "        ${4:// FloatingActionButton}",
+      "    }",
+      ") { innerPadding ->",
+      "    Box(modifier = Modifier.padding(innerPadding)) {",
+      "        $0",
+      "    }",
+      "}"
+    ],
+    "description": "Create a Scaffold template"
+  },
+  "LaunchedEffect": {
+    "prefix": "launchedeffect",
+    "body": [
+      "LaunchedEffect(key1 = ${1:true}) {",
+      "    $0",
+      "}"
+    ],
+    "description": "Create a LaunchedEffect side effect block"
+  },
+  "rememberCoroutineScope": {
+    "prefix": "scope",
+    "body": [
+      "val ${1:coroutineScope} = rememberCoroutineScope()"
+    ],
+    "description": "Get a coroutine scope in Composable"
+  },
+  "Text Composable": {
+    "prefix": "txt",
+    "body": [
+      "Text(",
+      "    text = \"${1:text}\",",
+      "    modifier = ${2:Modifier},",
+      "    style = MaterialTheme.typography.${3:bodyLarge}",
+      ")"
+    ],
+    "description": "Create a Text Composable"
+  },
+  "Button Composable": {
+    "prefix": "btn",
+    "body": [
+      "Button(",
+      "    onClick = { ${1:// onClick action} },",
+      "    modifier = ${2:Modifier}",
+      ") {",
+      "    Text(text = \"${3:Button Text}\")",
+      "}"
+    ],
+    "description": "Create a Button Composable"
+  },
+  "Image Composable": {
+    "prefix": "img",
+    "body": [
+      "Image(",
+      "    painter = painterResource(id = R.drawable.${1:ic_launcher_foreground}),",
+      "    contentDescription = \"${2:description}\",",
+      "    modifier = ${3:Modifier}",
+      ")"
+    ],
+    "description": "Create an Image Composable"
+  },
+  "Spacer Helper": {
+    "prefix": "spacer",
+    "body": [
+      "Spacer(modifier = Modifier.${1:height}(${2:16.dp}))"
+    ],
+    "description": "Create a Spacer composable"
+  },
+  "Room Entity": {
+    "prefix": "roomentity",
+    "body": [
+      "import androidx.room.Entity",
+      "import androidx.room.PrimaryKey",
+      "",
+      "@Entity(tableName = \"${1:tableName}s\")",
+      "data class ${2:EntityName}(",
+      "    @PrimaryKey(autoGenerate = true) val id: Int = 0,",
+      "    val ${3:field}: ${4:Type},",
+      "    val isSynced: Boolean = false",
+      ")"
+    ],
+    "description": "Create a Room Database Entity"
+  },
+  "Room DAO": {
+    "prefix": "roomdao",
+    "body": [
+      "import androidx.room.*",
+      "import kotlinx.coroutines.flow.Flow",
+      "",
+      "@Dao",
+      "interface ${1:EntityName}Dao {",
+      "    @Query(\"SELECT * FROM ${2:tableName}s ORDER BY ${3:date} DESC\")",
+      "    fun getAll${1:EntityName}s(): Flow<List<${4:EntityClass}>>",
+      "",
+      "    @Query(\"SELECT * FROM ${2:tableName}s ORDER BY ${3:date} DESC LIMIT :limit\")",
+      "    fun getLatest${1:EntityName}s(limit: Int): Flow<List<${4:EntityClass}>>",
+      "",
+      "    @Insert(onConflict = OnConflictStrategy.REPLACE)",
+      "    suspend fun insert${1:EntityName}(${5:entity}: ${4:EntityClass})",
+      "",
+      "    @Delete",
+      "    suspend fun delete${1:EntityName}(${5:entity}: ${4:EntityClass})",
+      "",
+      "    @Query(\"SELECT * FROM ${2:tableName}s WHERE isSynced = 0\")",
+      "    suspend fun getUnsynced${1:EntityName}s(): List<${4:EntityClass}>",
+      "",
+      "    @Query(\"UPDATE ${2:tableName}s SET isSynced = 1 WHERE id IN (:ids)\")",
+      "    suspend fun mark${1:EntityName}sAsSynced(ids: List<Int>)",
+      "}"
+    ],
+    "description": "Create a Room Database DAO with Flow queries and sync helpers"
+  },
+  "Room Database": {
+    "prefix": "roomdb",
+    "body": [
+      "import androidx.room.Database",
+      "import androidx.room.RoomDatabase",
+      "",
+      "@Database(entities = [${1:EntityClass}::class], version = ${2:1}, exportSchema = false)",
+      "abstract class ${3:AppDatabase} : RoomDatabase() {",
+      "    abstract fun ${4:entityName}Dao(): ${1:EntityClass}Dao",
+      "}"
+    ],
+    "description": "Create a Room Database abstract class"
+  },
+  "Retrofit API Service": {
+    "prefix": "retrofitapi",
+    "body": [
+      "import retrofit2.Response",
+      "import retrofit2.http.*",
+      "",
+      "interface ${1:ApiService} {",
+      "    @GET(\"${2:endpoint}\")",
+      "    suspend fun get${3:Data}(): Response<List<${4:ModelClass}>>",
+      "",
+      "    @POST(\"${2:endpoint}\")",
+      "    suspend fun create${3:Data}(@Body ${5:body}: ${4:ModelClass}): Response<${4:ModelClass}>",
+      "}"
+    ],
+    "description": "Create a Retrofit API Service Interface"
+  },
+  "Retrofit Client Instance": {
+    "prefix": "retrofitclient",
+    "body": [
+      "import okhttp3.OkHttpClient",
+      "import okhttp3.logging.HttpLoggingInterceptor",
+      "import retrofit2.Retrofit",
+      "import retrofit2.converter.gson.GsonConverterFactory",
+      "",
+      "object ${1:RetrofitClient} {",
+      "    private const val BASE_URL = \"${2:https://api.example.com/}\"",
+      "",
+      "    private val okHttpClient by lazy {",
+      "        OkHttpClient.Builder()",
+      "            .addInterceptor(HttpLoggingInterceptor().apply {",
+      "                level = HttpLoggingInterceptor.Level.BODY",
+      "            })",
+      "            .build()",
+      "    }",
+      "",
+      "    val apiService: ${3:ApiService} by lazy {",
+      "        Retrofit.Builder()",
+      "            .baseUrl(BASE_URL)",
+      "            .client(okHttpClient)",
+      "            .addConverterFactory(GsonConverterFactory.create())",
+      "            .build()",
+      "            .create(${3:ApiService}::class.java)",
+      "    }",
+      "}"
+    ],
+    "description": "Create a Retrofit Client Singleton Instance with OkHttp Logging"
+  }
+}
