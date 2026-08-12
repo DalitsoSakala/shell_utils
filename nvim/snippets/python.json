@@ -1,0 +1,16 @@
+{
+  "Pandas ExcelWriter with BytesIO": {
+    "prefix": "pdexcelio",
+    "body": [
+      "import io",
+      "import pandas as pd",
+      "",
+      "${1:output} = io.BytesIO()",
+      "with pd.ExcelWriter(${1:output}, engine='${2:xlsxwriter}') as writer:",
+      "    ${3:df}.to_excel(writer, sheet_name='${4:Sheet1}', index=${5:False})",
+      "",
+      "${6:excel_data} = ${1:output}.getvalue()"
+    ],
+    "description": "Write a Pandas DataFrame to an Excel file in-memory using BytesIO"
+  }
+}
