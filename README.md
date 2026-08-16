@@ -137,7 +137,7 @@ Field syntax (comma separated):
 | `name` | `CharField(max_length=255)` |
 | `name:Int` | `IntegerField` (aliases: Char, Text, Int, Float, Bool, Date, DateTime, JSON, Array, UUID, Slug, Email, URL, File, Image, Decimal, …) |
 | `name:Type?` | nullable field (`**NULLABLE` / `**NULLABLE_CHARFIELD` with djangondor) |
-| `owner:FK:User` | `ForeignKey('User', on_delete=…)` |
+| `owner:FK:User` | `ForeignKey('User', on_delete=models.SET_NULL)` (nullable) |
 | `owner:FK:User?` | nullable FK (`on_delete=models.SET_NULL`) |
 | `groups:M2M:Role` | `ManyToManyField('Role')` |
 | `profile:O2O:User` | `OneToOneField('User')` |

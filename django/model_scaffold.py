@@ -161,11 +161,8 @@ def render_field(f: Field, use_djangondor: bool, related: str) -> str:
     indent = '    '
     if f.ftype in ('ForeignKey', 'OneToOneField'):
         args = [f"'{f.target}'"]
-        if f.nullable:
-            args.append('on_delete=models.SET_NULL')
-            args.extend(_nullable_kwargs(use_djangondor, []))
-        else:
-            args.append('on_delete=models.CASCADE')
+        args.append('on_delete=models.SET_NULL')
+        args.extend(_nullable_kwargs(use_djangondor, []))
         args.append(f"related_name='{related}'")
         return f"{indent}{f.name} = models.{f.ftype}({', '.join(args)})"
     if f.ftype == 'ManyToManyField':
@@ -496,10 +493,12 @@ def build_permission_body(name: str, content: str) -> str:
     return '\n'.join(lines)
 
 
-def build_view_imports(name: str, use_scaffold_perms: bool, use_shared_tools_perms: bool, use_extend_schema: bool) -> list[str]:
+def build_view_imports(name: str, use_scaffold_perms: bool, use_shared_tools_perms: bool, use_extend_schema: bool, use_viewset_mixins: bool) -> list[str]:
     imports = ['from rest_framework import viewsets']
     if use_extend_schema:
         imports.append('from drf_spectacular.utils import extend_schema')
+    if use_viewset_mixins:
+        imports.append('from api.views.mixins.shared import SortingMixin, ViewsetPropsMixin')
     imports.append(f'from ..models import {name}')
     imports.append(f'from .filters import {name}Filter')
     imports.append(f'from .serializers import {name}Serializer')
@@ -510,7 +509,7 @@ def build_view_imports(name: str, use_scaffold_perms: bool, use_shared_tools_per
     return imports
 
 
-def build_view_body(name: str, app_title: str, use_scaffold_perms: bool, use_shared_tools_perms: bool, use_extend_schema: bool) -> str:
+def build_view_body(name: str, app_title: str, use_scaffold_perms: bool, use_shared_tools_perms: bool, use_extend_schema: bool, use_viewset_mixins: bool) -> str:
     upper = snake(name).upper()
     lines = []
     if use_extend_schema:
@@ -524,7 +523,10 @@ def build_view_body(name: str, app_title: str, use_scaffold_perms: bool, use_sha
             '    },',
             ')',
         ]
-    lines.append(f'class {name}ViewSet(viewsets.ModelViewSet):')
+    if use_viewset_mixins:
+        lines.append(f'class {name}ViewSet(SortingMixin, ViewsetPropsMixin[{name}], viewsets.ModelViewSet):')
+    else:
+        lines.append(f'class {name}ViewSet(viewsets.ModelViewSet):')
     lines.append(f"    queryset = {name}.objects.all().order_by('-id')")
     lines.append(f'    serializer_class = {name}Serializer')
     lines.append(f'    filterset_class = {name}Filter')
@@ -814,6 +816,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument('--admin', type=int, default=0)
     ap.add_argument('--serializer', type=int, default=0)
     ap.add_argument('--viewset', type=int, default=0)
+    ap.add_argument('--viewset-mixins', type=int, default=0, help='Extend SortingMixin + ViewsetPropsMixin on the viewset (api/views/mixins/shared.py)')
     ap.add_argument('--filterset', type=int, default=0)
     ap.add_argument('--urls', type=int, default=0)
     ap.add_argument('--permissions', type=int, default=0)
@@ -866,6 +869,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.permission_source == 'shared_tools' and not use_shared_tools:
         print("Warning: 'shared_tools' not importable; falling back to an app-level permission class.", file=sys.stderr)
     use_extend_schema = module_available('drf_spectacular')
+
+    use_viewset_mixins = bool(args.viewset_mixins) and bool(args.viewset) and (root / 'api' / 'views' / 'mixins' / 'shared.py').exists()
+    if args.viewset_mixins and not use_viewset_mixins:
+        print("Warning: --viewset-mixins requires the viewset and api/views/mixins/shared.py; skipping the mixins.", file=sys.stderr)
 
     use_scaffold_perms = bool(args.permissions) and not use_shared_tools
     use_manager = bool(args.manager)
@@ -941,8 +948,8 @@ def main(argv: list[str] | None = None) -> int:
             results.append(('permissions.py', 'added', str(perm_path)))
 
     if use_viewset:
-        do_append('api/views.py', build_view_imports(name, use_scaffold_perms, use_shared_tools, use_extend_schema),
-                  build_view_body(name, app_title, use_scaffold_perms, use_shared_tools, use_extend_schema),
+        do_append('api/views.py', build_view_imports(name, use_scaffold_perms, use_shared_tools, use_extend_schema, use_viewset_mixins),
+                  build_view_body(name, app_title, use_scaffold_perms, use_shared_tools, use_extend_schema, use_viewset_mixins),
                   lambda c: class_exists(c, f'{name}ViewSet'))
 
     if use_urls and use_viewset:

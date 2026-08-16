@@ -302,14 +302,15 @@ _make_django_model() {
     fi
 
     # --- feature prompts --------------------------------------------------------
-    local mgr=0 adm=0 ser=0 view=0 flt=0 url=0 perm=0
+    local mgr=0 adm=0 ser=0 view=0 vmix=0 flt=0 url=0 perm=0
     local etl=0 etl_lib="pandas" sql_name="" etl_fn="" cmd=0 cmd_name="" celery=0 api_client=0 fe_dir="" ty_file=""
-    local sn app_sn
+    local sn app_sn mixins_available=0
+    [ -f "$root/api/views/mixins/shared.py" ] && mixins_available=1
     sn="$(_make_django_snake "$Name")"
     app_sn="$(_make_django_snake "$app")"
     if [ "$yes" = 1 ]; then
         # Non-interactive: scaffold the full stack by default.
-        mgr=1; adm=1; ser=1; view=1; flt=1; url=1; perm=1
+        mgr=1; adm=1; ser=1; view=1; vmix="$mixins_available"; flt=1; url=1; perm=1
         etl=1; etl_lib="pandas"; sql_name="${sn}"; etl_fn="process_${sn}_query"
         cmd=1; cmd_name="${app_sn}"
         celery=1; api_client=1
@@ -320,6 +321,7 @@ _make_django_model() {
         if _make_django_confirm "Register ${Name} in admin.py? [Y/n]: "; then adm=1; fi
         if _make_django_confirm "Create a DRF serializer (api/serializers.py)? [Y/n]: "; then ser=1; fi
         if _make_django_confirm "Create a DRF viewset (api/views.py)? [Y/n]: "; then view=1; fi
+        if [ "$view" = 1 ] && [ "$mixins_available" = 1 ] && _make_django_confirm "Extend SortingMixin + ViewsetPropsMixin on the viewset? [Y/n]: "; then vmix=1; fi
         if _make_django_confirm "Create a django-filter filterset (api/filters.py)? [Y/n]: "; then flt=1; fi
         if _make_django_confirm "Register the viewset in api/urls.py? [Y/n]: "; then url=1; fi
         if _make_django_confirm "Create a permission class (permissions.py)? [Y/n]: "; then perm=1; fi
@@ -370,7 +372,7 @@ _make_django_model() {
     echo "App:        ${app}"
     echo "Fields:     ${arg_fields}"
     echo "Base:       ${base}"
-    echo "Features:   manager=${mgr} admin=${adm} serializer=${ser} viewset=${view} filterset=${flt} urls=${url} permissions=${perm} (perms source: ${perm_src})"
+    echo "Features:   manager=${mgr} admin=${adm} serializer=${ser} viewset=${view}${vmix:+ mixins=1} filterset=${flt} urls=${url} permissions=${perm} (perms source: ${perm_src})"
     echo "ETL:        etl=${etl}${etl:+ lib=${etl_lib} sql=${sql_name} fn=${etl_fn}}"
     echo "Extras:     command=${cmd}${cmd:+ name=${cmd_name}} celery=${celery} api-client=${api_client}${api_client:+ dir=${fe_dir} typings=${ty_file}}"
     if [ "$yes" != 1 ]; then
@@ -385,7 +387,7 @@ _make_django_model() {
     "$py" "$DJANGO_SCAFFOLD_DIR/model_scaffold.py" \
         --root "$root" --app "$app" --name "$Name" --fields "$arg_fields" --base "$base" \
         --manager "$mgr" --admin "$adm" --serializer "$ser" --viewset "$view" \
-        --filterset "$flt" --urls "$url" --permissions "$perm" \
+        --viewset-mixins "$vmix" --filterset "$flt" --urls "$url" --permissions "$perm" \
         --permission-source "$perm_src" \
         --etl "$etl" --etl-lib "$etl_lib" --sql-name "$sql_name" --etl-function "$etl_fn" \
         --command "$cmd" --command-name "$cmd_name" \
