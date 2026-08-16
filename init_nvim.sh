@@ -35,6 +35,14 @@ else
     echo "Linked ${NVIM_CONFIG_DST} -> ${NVIM_CONFIG_SRC}"
 fi
 
+echo "Regenerating Kotlin snippets from shell_utils templates..."
+SNIPPETS_GEN="${REPO_DIR}/android/studio/templates/generate_snippets.sh"
+if [ -f "$SNIPPETS_GEN" ]; then
+    bash "$SNIPPETS_GEN"
+else
+    echo "  (snippet generator not found at ${SNIPPETS_GEN}; keeping existing snippets)"
+fi
+
 echo "Bootstrapping Lazy plugins (headless Lazy! sync)..."
 nvim --headless "+Lazy! sync" +qa
 
